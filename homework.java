@@ -10,11 +10,11 @@ public class homework {
 		
 	    int Board_Size = Integer.valueOf(input.nextLine());
 		String Mode = input.nextLine();
-		System.out.println("Mode " +Mode);
+	//	System.out.println("Mode " +Mode);
 		String You_Play = input.nextLine();
-		System.out.println("My Play " +You_Play);
+	//	System.out.println("My Play " +You_Play);
 		int Depth = Integer.valueOf(input.nextLine());
-		System.out.println("Depth " +Depth);
+	//	System.out.println("Depth " +Depth);
 	
 		int [] [] Cell_Value = new int [Board_Size][Board_Size];
 		for(int i=0 ; i<Board_Size ; i++)
@@ -27,7 +27,7 @@ public class homework {
 		}
 		
 		// Display the score of board
-		for(int i=0 ; i<Board_Size ; i++)
+	/*	for(int i=0 ; i<Board_Size ; i++)
 		{
 			
 			for(int j=0 ; j<Board_Size;j++)
@@ -35,7 +35,7 @@ public class homework {
 				System.out.print(Cell_Value[i][j] +" ");
 			}
 			System.out.println();
-		}
+		} */
 		
 		
 		
@@ -56,7 +56,7 @@ public class homework {
 		
 	
 		//Displaying the current state
-		System.out.println();
+/*		System.out.println();
 		System.out.println("Board State");
 		
 		for (int i =0 ; i<Board_Size ; i++)
@@ -69,18 +69,46 @@ public class homework {
 			System.out.println();
 		}
 		
+		*/
 	
 		
 		
 		input.close();
-		LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> actions = new LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> ();
+		 file = new File ("output.txt");
+ 		FileOutputStream fos;
+ 		try {
+ 			fos = new FileOutputStream(file);
+ 			PrintStream ps = new PrintStream(fos);
+ 			System.setOut(ps);
+ 		} catch (FileNotFoundException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}  
+ 		
+//		LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> actions = new LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> ();
 		long ST = System.currentTimeMillis();
-		MiniMax m = new MiniMax(Board_Size,You_Play,Depth,Cell_Value,Board_State);
-		m.MINIMAX_DECISION(Board_State);
+	//	MiniMax m = new MiniMax(Board_Size,You_Play,Depth,Cell_Value,Board_State);
+	//	m.MINIMAX_DECISION(Board_State);
+	//	ALPHA_BETA ab = new ALPHA_BETA(Board_Size,You_Play,Depth,Cell_Value,Board_State);
+	//	ab.ALPHA_BETA_SEARCH(Board_State);
 		long ET = System.currentTimeMillis();
 		double sec = (ET-ST)/1000;
-		System.out.println(sec);
-	/*actions =	m.Actiongen(You_Play,Board_State);
+	//	System.out.println(sec);
+	
+		switch(Mode)
+		{
+		case "MINIMAX" :
+			MiniMax m = new MiniMax(Board_Size,You_Play,Depth,Cell_Value,Board_State);
+			m.MINIMAX_DECISION(Board_State);
+			break;
+		case "ALPHABETA" :
+			ALPHA_BETA ab = new ALPHA_BETA(Board_Size,You_Play,Depth,Cell_Value,Board_State);
+			ab.ALPHA_BETA_SEARCH(Board_State);
+			break;
+		}
+		
+		
+		/*actions =	m.Actiongen(You_Play,Board_State);
 	System.out.println(actions);
 	
 	//testing apply action

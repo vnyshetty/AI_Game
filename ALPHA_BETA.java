@@ -1,6 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
-public class MiniMax {
+public class ALPHA_BETA {
 	int Board_Size;
 	String You_Play;
 	int Depth;
@@ -9,7 +10,7 @@ public class MiniMax {
 	String Opponent;
 	
 	//Constructor
-	MiniMax(int Board,String You_Play,int Depth, int[][] Cell_Value,String [][] Board_State){
+	ALPHA_BETA(int Board,String You_Play,int Depth, int[][] Cell_Value,String [][] Board_State){
 		this.Board_Size = Board;
 		this.You_Play= You_Play;
 		this.Depth = Depth;
@@ -21,6 +22,8 @@ public class MiniMax {
 			Opponent = "X";
 		
 	}
+	
+	
 	
 	// Start of Actiongen
 	public LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> Actiongen (String player , String [][] current_state){
@@ -239,16 +242,23 @@ public class MiniMax {
 	//End of eval function
 	
 	
-	public void MINIMAX_DECISION(String [][] Board_State )
+	public void ALPHA_BETA_SEARCH(String [][] Board_State )
 	{
 		int Max_value =-9999999 ;
 		int value;
+		int v;
 		String Max_Action="";
 		int r_row=-1;
 		int r_column=-1;
 		String [][] result=Board_State;
 		LinkedHashMap<String,LinkedHashMap<Integer,ArrayList<Integer>>> actions;
 	    actions =Actiongen(You_Play,Board_State);
+	    
+	    
+	    
+	    
+	    
+	    
 	 //   System.out.println("Inside +MINIMAX_DECISION "+actions);
 	    for(String action : actions.keySet())
 	    {
@@ -260,27 +270,27 @@ public class MiniMax {
 	    		len = actions.get(action).get(row).size();
 	    		for (int i=0; i<len;i++)
 	    		{
-	    			value= Min_Value(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State),Depth-1);
+	    			//value= Min_Value(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State),Depth-1);
 	    		//	System.out.println("row, col : "+ row + "," + actions.get(action).get(row).get(i) + " == " + value );
-	    			if (Max_value < value)
+	    	//	value = Eval(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State));
+	    			v = Min_Value(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State), Depth-1, -9999999, 9999999);
+	    			
+	    			if(Max_value<v)
 	    			{
-	    				//result = Board_State;
-	    				Max_value = value;
+	    				Max_value = v;
 	    				Max_Action = action;
 	    				r_row = row;
 	    				r_column = actions.get(action).get(row).get(i);
-	    			//	System.out.print(Max_Action);
 	    			}
+	    			
 	    		}
-	    			
-	    		
-	    			
 	    		
 	    	}
 	    	
 	    }
+	    
 	 //   System.out.println(Max_Action + " " + r_row +" " + (char)('A'+r_column));
-	     System.out.print((char)('A'+r_column));
+	    System.out.print((char)('A'+r_column));
 	     System.out.print(r_row+1);
 	     System.out.print(" "+Max_Action);
 	     System.out.println("");
@@ -311,12 +321,18 @@ public class MiniMax {
 	    	 }
 	    	 System.out.println("");
 	     }
+	     
+	     
+	    
 	    
 	  }
 	
-	public int MAX_VALUE(String [][]Board_State, int D )
+	public int MAX_VALUE(String [][]Board_State, int D ,int Alpha , int Beta)
 	{
 		int v;
+		int a , b;
+		a = Alpha;
+		b = Beta;
 		if (TERMINAL_TEST(Board_State,D))
 			return Eval(Board_State);
 		v = -9999999;
@@ -330,17 +346,24 @@ public class MiniMax {
 				int len;
 				len = actions.get(action).get(row).size();
 				for (int i=0;i<len;i++)
-					v = Max(v,Min_Value(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State),D-1));
-				
+				{
+					v = Max(v,Min_Value(ApplyAction(You_Play,action,row,actions.get(action).get(row).get(i),Board_State),D-1,a,b));
+					if (v>=b)
+						return v;
+					a = Max(a, v);
+				}
 			}
 		}
 		return v;
 		
 	}
 	
-	public int Min_Value(String [][]Board_State, int D )
+	public int Min_Value(String [][]Board_State, int D,int Alpha , int Beta )
 	{
 		int v;
+		int a,b;
+		a= Alpha;
+		b=Beta;
 		if (TERMINAL_TEST(Board_State,D)){
 		//	System.out.println("here");
 			return Eval(Board_State);
@@ -362,7 +385,10 @@ public class MiniMax {
 				for (int i=0;i<len;i++)
 				{
 				//	System.out.println("Column "+actions.get(action).get(row).get(i));
-					v = Min(v,MAX_VALUE(ApplyAction(Opponent,action,row,actions.get(action).get(row).get(i),Board_State),D-1));
+					v = Min(v,MAX_VALUE(ApplyAction(Opponent,action,row,actions.get(action).get(row).get(i),Board_State),D-1,a,b));
+					if(v<=a)
+						return v;
+					b = Min(b, v);
 				}
 			}
 		}
